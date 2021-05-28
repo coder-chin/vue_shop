@@ -78,14 +78,14 @@ export default {
     login() {
       this.$refs.loginFormRef.validate(async (valid) => {
         if (!valid) return
-        const { data: res } = await this.$http.post('login', this.loginForm) //结构
-        //post返回值时promise为了简化promise操作，可以用async,await进行优化
+        const { data: res } = await this.$http.post('login', this.loginForm) //解构  相当于res = xxx.data
+        //post返回值是promise为了简化promise操作，可以用async,await进行优化
         if (res.meta.status !== 200) return this.$message.error('登陆失败')
         //消息提示实际上就是函数
         this.$message.success('登陆成功')
         //1.将登陆成功之后的token,保存到客户端的sessionStotage中
         //  1.1 项目中除了登录之外的其他的API接口，必须在登录之后才能访问
-        //  1.2 token止盈在当前网站打开期间生效，所以将token保存在sessionStorage中
+        //  1.2 token只应在当前网站打开期间生效，所以将token保存在sessionStorage中
         console.log(res)
         window.sessionStorage.setItem('token', res.data.token)
         //2. 通过编程式导航跳转到后台页面，路由地址是/home
@@ -100,6 +100,7 @@ export default {
 .login_container {
   background-color: #2b4b6b;
   height: 100%;
+  //div块级元素宽度肯定是100%
   .login_box {
     width: 450px;
     height: 300px;
@@ -108,7 +109,7 @@ export default {
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); //居中显示的方案
     .avatar_box {
       width: 130px;
       height: 130px;
