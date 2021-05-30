@@ -10,6 +10,7 @@
     <el-card class="box-card">
       <!-- 搜索与添加区域 -->
       <el-row :gutter="20">
+        <!-- el-row和el-col在Layout布局组件中 -->
         <el-col :span="7">
           <el-input
             placeholder="请输入内容"
@@ -17,6 +18,7 @@
             clearable
             @clear="getUserList"
           >
+          <!-- clearable就是输入框后面的清除小图标 -->
             <el-button
               slot="append"
               icon="el-icon-search"
@@ -74,6 +76,7 @@
                 icon="el-icon-setting"
                 size="mini"
                 title="修改"
+                @click="setRole(scope.row)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -152,6 +155,32 @@
         <el-button type="primary" @click="editUserInfo">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 分配角色的对话框 -->
+    <el-dialog
+      title="分配角色"
+      :visible.sync="setRoleDialogVisible"
+      width="50%"
+      @close='setRoleDialogClosed'
+      >
+      <div>
+        <p>当前用户:{{userInfo.username}}</p>
+        <p>当前角色:{{userInfo.role_name}}</p>
+        <p>分配新角色：
+          <el-select v-model="selectedRoleId" placeholder="请选择">
+            <el-option
+              v-for="item in rolesList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id">
+            </el-option>
+  </el-select>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="setRoleDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveRoleInfo">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -162,27 +191,21 @@ export default {
     var checkEmail = (rule, value, cb) => {
       // 验证邮箱的正则表达式
       const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
-
       if (regEmail.test(value)) {
         // 合法的邮箱
         return cb()
       }
-
       cb(new Error('请输入合法的邮箱'))
     }
-
     // 验证手机号的规则
     var checkMobile = (rule, value, cb) => {
       // 验证手机号的正则表达式
       const regMobile = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
-
       if (regMobile.test(value)) {
         return cb()
       }
-
       cb(new Error('请输入合法的手机号'))
     }
-
     return {
       //获取用户列表的参数对象
       queryInfo:{
@@ -247,6 +270,12 @@ export default {
           { validator: checkMobile, trigger: 'blur' }
         ]
       },
+      setRoleDialogVisible: false,
+      //需要被分配角色的用户信息
+      userInfo: {},
+      //所有角色列表
+      rolesList: [],
+      selectedRoleId: ''
     }
   },
   created(){
@@ -290,15 +319,14 @@ export default {
       this.$refs.addFormRef.validate(async valid => {
         if(!valid) return
         const { data: res} = await this.$http.post('users',this.addForm)
-        if(res.meta.status !== 201) this.$message.error('添加用户失败！')
-        this.$message.error('添加用户成功！')
+        if(res.meta.status !== 201) return this.$message.error('添加用户失败！')
+        this.$message.success('添加用户成功！')
         this.addDialogVisible = false
         this.getUserList()
       })
     },
     //监听编辑用户的对话框
     async showEditDialog(id){
-      console.log(id);
       const { data:res} = await this.$http.get('users/'+ id)
       if(res.meta.status !== 200) return this.$message.error('查询用户信息失败！')
       this.editForm = res.data
@@ -338,8 +366,30 @@ export default {
       }
       this.$message.success('删除用户成功')
       this.getUserList()
+    },
+    //这是展示分配角色的对话框
+    async setRole(userInfo) {
+      this.userInfo = userInfo
+      this.setRoleDialogVisible = true
+      //在展示对话框之前获取所有角色的列表
+      const { data: res } = await this.$http.get('roles')
+      if(res.meta.status !== 200) return this.$message.error('获取角色列表失败')
+      this.rolesList = res.data
+    },
+    //点击按钮分配角色
+    async saveRoleInfo() {
+      if(!this.selectedRoleId)
+      return this.$message.error('请选择要分配的角色')
+      const { data: res} = await this.$http.put(`users/${this.userInfo.id}/role`,{rid: this.selectedRoleId})
+      if(res.meta.status !== 200) return this.$message.error('更新角色失败')
+      this.$message.success('更新角色成功')
+      this.getUserList()
+      this.setRoleDialogVisible = false
+    },
+    setRoleDialogClosed() {
+      this.selectedRoleId = ''
+      this.userInfo = ''
     }
-    
   }
 }
 </script>
