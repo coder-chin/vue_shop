@@ -19,10 +19,15 @@
       :data="rolelist"
       border
       stripe>
+      <!-- border显示边框，stripe隔行变色 -->
         <el-table-column
-        type="expand">
+        type="expand"
+        label="展开权限">
+        <!-- expand表示可以展开 -->
+        <!-- 自定义模板 -->
           <template slot-scope="scope">
-            <el-row v-for="(item1, i1) in scope.row.children" :key="item1.id" :class="['bdbottom',i1==0 ? 'bdtop':'bdbottom','vcenter']">
+            <!-- scope.row表示获取当前改行数据 -->
+            <el-row v-for="(item1, i1) in scope.row.children" :key="item1.id" :class="['bdbottom',i1==0 ? 'bdtop':'','vcenter']">
               <el-col :span="5">
                 <el-tag 
                 closable
@@ -147,7 +152,6 @@
 </template>
 
 <script>
-import Template from '../Template.vue'
 export default {
   data() {
     return{
@@ -155,8 +159,11 @@ export default {
       rolelist: [],
       editForm: {},
       rightsList: [],
+      //控制添加角色对话框的显示
       addDialogVisible: false,
+      //控制编辑角色对话框的显示
       editDialogVisible: false,
+      //控制分配角色对话框的显示
       setRightDialogVisible: false,
       addForm: {
         roleName: '',
@@ -197,6 +204,7 @@ export default {
       const { data:res } = await this.$http.get('roles')
       if(res.meta.status !== 200) return this.$message.error('获取角色列表失败')
       this.rolelist = res.data
+      console.log(res);
     },
     addDialogClosed() {
       this.$refs.addFormRef.resetFields()
@@ -216,7 +224,7 @@ export default {
       )
     },
     async showEditDialog(id){
-      const { data:res} = await this.$http.put('roles/'+ id)
+      const { data:res} = await this.$http.get('roles/'+ id)
       if(res.meta.status !== 200) return this.$message.error('查询用户信息失败！')
       this.editForm = res.data
       this.editDialogVisible = true
@@ -257,6 +265,7 @@ export default {
           return this.$message.error('删除权限失败！')
         }
         this.$message.success('删除用户成功')
+        //返回的是当前角色下的最新数据
         role.children = res.data
     },
     async showSetRightDialog(role) {
@@ -283,6 +292,7 @@ export default {
     //点击为角色分配权限
     async allotRights() {
       const keys = [...this.$refs.treeRef.getCheckedKeys(),...this.$refs.treeRef.getHalfCheckedKeys()]
+      // console.log(keys);
       const idStr = keys.join(',')
       const { data: res } = await this.$http.post(`roles/${this.roleId}/rights`,{rids:idStr})
       if(res.meta.status !== 200) return this.$message.error('分配权限失败')

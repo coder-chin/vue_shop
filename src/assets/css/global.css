@@ -3,6 +3,7 @@ html,body,#app{
   margin: 0;
   padding: 0;
   min-width: 1366px;
+  /* 这行代码很绝 */
 }
 .el-breadcrumb{
   margin-bottom: 15px;

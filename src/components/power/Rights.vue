@@ -41,19 +41,17 @@
 </template>
 
 <script>
-import Template from '../Template.vue'
 export default {
-  components: { Template },
   data() {
     return {
       //权限列表
       rightsList:[],
-
     }
   },
   methods: {
     async getRightsList(){
       const { data:res } = await this.$http.get('rights/list')
+      console.log(res);
       if(res.meta.status !== 200) return this.$message.error('获取权限列表失败!')
       this.rightsList = res.data
     }
