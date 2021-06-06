@@ -37,6 +37,31 @@
             stripe>
             <el-table-column
             type="expand">
+              <template v-slot='scope'>
+                <el-tag 
+                v-for="(item,index) in scope.row.attr_vals" 
+                :key='index'
+                closable
+                @close='handleClose(index,scope.row)'>
+                  {{item}}
+                </el-tag>
+                <el-input
+                  class="input-new-tag"
+                  v-if="scope.row.inputVisible"
+                  v-model="scope.row.inputValue"
+                  ref="saveTagInput"
+                  size="small"
+                  @keyup.enter.native="handleInputConfirm(scope.row)"
+                  @blur="handleInputConfirm(scope.row)"
+                >
+                </el-input>
+                <el-button 
+                v-else 
+                class="button-new-tag" 
+                size="small" 
+                @click="showInput(scope.row)">+ New Tag
+                </el-button>
+              </template>
             </el-table-column>
             <el-table-column
               label="#"
@@ -67,6 +92,31 @@
             stripe>
             <el-table-column
             type="expand">
+            <template v-slot='scope'>
+                <el-tag 
+                v-for="(item,index) in scope.row.attr_vals" 
+                :key='index'
+                closable
+                @close='handleClose(index,scope.row)'>
+                  {{item}}
+                </el-tag>
+                <el-input
+                  class="input-new-tag"
+                  v-if="scope.row.inputVisible"
+                  v-model="scope.row.inputValue"
+                  ref="saveTagInput"
+                  size="small"
+                  @keyup.enter.native="handleInputConfirm(scope.row)"
+                  @blur="handleInputConfirm(scope.row)"
+                >
+                </el-input>
+                <el-button 
+                v-else 
+                class="button-new-tag" 
+                size="small" 
+                @click="showInput(scope.row)">+ New Tag
+                </el-button>
+              </template>
             </el-table-column>
             <el-table-column
               label="#"
@@ -166,8 +216,7 @@ export default {
       // console.log(this.catelist)
     },
     handleChange() {
-      this.getParamsData()  
-
+      this.getParamsData()
     },
     handleTabClick() {
       this.getParamsData()
@@ -175,10 +224,21 @@ export default {
     async getParamsData() {
       if(this.selectedCateKeys.length!==3){
         this.selectedCateKeys = []
+        this.manyTableData = []
+        this.onlyTableData = []
         return 
       }
       const { data:res } = await this.$http.get(`categories/${this.cateId}/attributes`,{params: {sel:this.activeName}})
       if(res.meta.status !== 200) return this.$message.error('获取参数列表失败')
+      // console.log(res.data);
+      res.data.forEach(item => {
+        item.attr_vals = item.attr_vals ? 
+        item.attr_vals = item.attr_vals.split(',') : []
+        //控制文本框的显示与隐藏
+        item.inputVisible = false
+        //文本框输入的值
+        item.inputValue = ''
+      })
       console.log(res.data);
       if(this.activeName === 'many') this.manyTableData = res.data
       else this.onlyTableData = res.data
@@ -233,6 +293,41 @@ export default {
       if(res.meta.status!==200) return this.$message.error('删除参数失败')
       this.$message.success('删除参数成功')
       this.getParamsData()
+    },
+    handleInputConfirm(item) {
+      if(item.inputValue.trim().length === 0)  
+      {
+        item.inputValue = ''
+        item.inputVisible = false
+        return 
+      }
+      //没有return，则证明输入内容需要做后续处理
+      item.attr_vals.push(item.inputValue.trim())
+      item.inputValue = ''
+      item.inputVisible = false
+      this.saveAttrVals(item)
+    },
+    showInput(item) {
+      item.inputVisible = true
+      //自动获取焦点
+      //$nextTick()方法的作用，就是当页面上元素被重新渲染之后才会执行回调函数中的代码
+      this.$nextTick(_ => {
+          this.$refs.saveTagInput.$refs.input.focus();
+        });
+    },
+    handleClose(index,row) {
+      row.attr_vals.splice(index,1)
+      this.saveAttrVals(row)
+    },
+    async saveAttrVals(row){
+      const { data:res } = await this.$http.put(`categories/${this.cateId}/attributes/${row.attr_id}`,{
+        attr_name: row.attr_name,
+        attr_sel: row.attr_sel,
+        attr_vals: row.attr_vals.join(',')
+      })
+      console.log(res);
+      if(res.meta.status !== 200) return this.$message.error('提交参数失败')
+      this.$message.success('提交参数成功')
     }
   },
   computed: {
@@ -256,5 +351,11 @@ export default {
 <style lang="less" scoped>
 .cat_opt{
   margin: 15px 0;
+}
+.el-tag{
+  margin: 10px;
+}
+.input-new-tag{
+  width: 120px;
 }
 </style>
