@@ -19,7 +19,8 @@ Vue.use(VueQuillEditor, /* { default global options } */)
 Vue.component('tree-table', ZkTable)
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
-axios.defaults.baseURL = "http://127.0.0.1:8888/api/private/v1/"
+axios.defaults.baseURL = "http://timemeetyou.com:8889/api/private/v1/"
+//http://127.0.0.1:8888/api/private/v1/
 axios.interceptors.request.use(config => {
   config.headers.Authorization = window.sessionStorage.getItem('token')
   return config //在最后必须return config
