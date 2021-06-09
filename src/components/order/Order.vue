@@ -129,7 +129,6 @@
 <script>
 import cityData from './citydata'
 export default {
-  name: 'Welcome',
   data() {
     return{
       queryInfo: {
