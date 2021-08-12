@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import axios from 'axios'
+import Nprogress from 'nprogress'
 import ZkTable from 'vue-table-with-tree-grid'
 //导入富文本编辑器
 import VueQuillEditor from 'vue-quill-editor'
@@ -13,6 +14,8 @@ import './assets/fonts/iconfont.css'
 import 'quill/dist/quill.core.css' // import styles
 import 'quill/dist/quill.snow.css' // for snow theme
 import 'quill/dist/quill.bubble.css' // for bubble theme
+//导入nprogress css
+import 'nprogress/nprogress.css'
 //使用插件
 Vue.use(VueQuillEditor, /* { default global options } */)
 
@@ -21,8 +24,16 @@ Vue.config.productionTip = false
 Vue.prototype.$http = axios
 axios.defaults.baseURL = "http://timemeetyou.com:8889/api/private/v1/"
 //http://127.0.0.1:8888/api/private/v1/
+
+//在request拦截器中展示进度条
 axios.interceptors.request.use(config => {
+  Nprogress.start()
   config.headers.Authorization = window.sessionStorage.getItem('token')
+  return config //在最后必须return config
+})
+//在response拦截器中隐藏进度条
+axios.interceptors.response.use(config => {
+  Nprogress.done()
   return config //在最后必须return config
 })
 
