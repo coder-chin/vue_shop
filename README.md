@@ -1,5 +1,7 @@
 # Vue项目：电商管理系统
 
+> 此时还不了解后端技术。
+
 ## 1.项目概况
 
 ### 技术选型
@@ -26,19 +28,29 @@
 
 ### 2.3 开启数据库
 
-安装phpStudy以及导入sql，只开启sql，关闭Apache
+安装最新版[phpStudy](https://www.xp.cn/)以及导入sql，只开启sql，不需要Nginx和Apache
 
-Mysql->Mysql导入导出（导入vue_api_server->db->mydb.sql） 
+1. 启动mysql
+   ![](https://gitee.com/bjfuchin/mypic/raw/master/pic/20210815190708.png)
 
-![image-20210526222020576](assets/image-20210526222020576.png)
+2. 创建数据库
 
-如果mydb文件夹不为空说明数据库导入成功。
+   ![](https://gitee.com/bjfuchin/mypic/raw/master/pic/20210815190827.png)
+
+接着导入数据库，在后端项目db文件夹中。如果mydb文件夹不为空说明数据库导入成功。
+
+3. 后端项目config/default.json中进行配置
+   ![](https://gitee.com/bjfuchin/mypic/raw/master/pic/20210815190858.png)
 
 ### 2.4 开启后端项目
 
-运行vue_api_server,并使用poatman测试接口
+运行vue_api_server, 并使用poatman测试接口
 
 vue_api_server是一个后端项目，npm install安装依赖，再在命令行中输入node ./app.js开启服务
+
+测试成功：:arrow_down:
+
+![](https://gitee.com/bjfuchin/mypic/raw/master/pic/20210815191503.png)
 
 ## 3.登录/退出功能
 
@@ -61,7 +73,7 @@ vue_api_server是一个后端项目，npm install安装依赖，再在命令行�
 
 ### 3.2 登录原理分析
 
-由于存在跨域问题，所以要用token方案。（例如vue项目运行在8080端口，后端服务在8888端口）。
+由于存在跨域问题，所以要用token方案。（跨域：协议或域名或端口号不同）
 
 ![image-20210526164157054](assets/image-20210526164157054.png)
 
@@ -73,11 +85,19 @@ vue_api_server是一个后端项目，npm install安装依赖，再在命令行�
 
 git checkout -b login
 
-注意：`git branch branchName 创建分支`      `  git checkout branchName切换分支 `      `git checkout -b branchName`
+注意：
+
+`git branch branchName `创建分支    
+
+ `  git checkout branchName `切换分支      
+
+`git checkout -b branchName`创建并切换分支
 
 #### 2.在GUI中开启项目
 
 本项目中全部使用GUI，不涉及命令行
+
+`vue ui`
 
 #### 3.清理脚手架中不必要的内容
 
@@ -93,7 +113,9 @@ git checkout -b login
 
 > 注意：在这里防止版本过高而报错，我使用命令行安装低版本
 >
-> npm install less-loader@4.1.0  --save-dev  		npm install  less@3.9.0 --save-dev
+> npm install less-loader@4.1.0  --save-dev  		
+>
+> npm install  less@3.9.0 --save-dev
 
 #### 6.input输入框中的图标 
 
@@ -346,4 +368,3 @@ babel-plugin-transform-remove-console移除所有console.log，配置只在发�
 2.只在发布阶段使用插件
 
 ![image-20210609203147245](Vue实战项目：电商管理系统.assets/image-20210609203147245.png)
-
