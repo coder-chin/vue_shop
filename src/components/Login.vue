@@ -1,5 +1,5 @@
 <template>
-  <div class="login_container">
+  <div class="loginContainer">
     <div class="login_box">
       <!-- 头像区域 -->
       <div class="avatar_box">
@@ -70,15 +70,17 @@ export default {
       },
     }
   },
+
   methods: {
     //点击按钮，重置登录表单
     resetLoginForm() {
       this.$refs.loginFormRef.resetFields()
     },
     login() {
-      this.$refs.loginFormRef.validate(async (valid) => {
-        if (!valid) return
-        const { data: res } = await this.$http.post('login', this.loginForm) //解构  相当于res = xxx.data
+      this.$refs.loginFormRef.validate(async (isValid) => {
+        if (!isValid) return
+        //成功的话向后台发起登录请求
+        const { data: res } = await this.$http.post('login', this.loginForm) //解构  理解方法: data命名为res
         //post返回值是promise为了简化promise操作，可以用async,await进行优化
         if (res.meta.status !== 200) return this.$message.error('登陆失败')
         //消息提示实际上就是函数
@@ -96,15 +98,15 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.login_container {
-  background-color: #2b4b6b;
+.loginContainer {
+  background-color: #59f3b0;
   height: 100%;
   //div块级元素宽度肯定是100%
   .login_box {
     width: 450px;
     height: 300px;
     background-color: #fff;
-    border-radius: 3px;
+    border-radius: 10px;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -112,8 +114,8 @@ export default {
     .avatar_box {
       width: 130px;
       height: 130px;
-      border: 1px solid #eee;
       border-radius: 50%; //为了显示出边框
+      border: 1px solid #eee;
       padding: 10px;
       box-shadow: 0 0 10px #ddd;
       position: absolute;
