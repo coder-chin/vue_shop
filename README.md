@@ -1,6 +1,16 @@
 # Vue项目：电商管理系统
 
-> 此时还不了解后端技术。
+管理系统的思路： 人 -> 角色 -> 权限
+
+后台会根据我们的登录账号匹配到角色，不同角色权限不同。亲测请求数据返回的结果也不同
+
+## 优化工作
+
+- 对axios配置进行了优化，封装成独立文件
+- 路由懒加载 -> 原理
+- 
+
+bug: 重新到界面以后自动展开
 
 ## 1.项目概况
 
@@ -39,7 +49,7 @@
 
 接着导入数据库，在后端项目db文件夹中。如果mydb文件夹不为空说明数据库导入成功。
 
-3. 后端项目config/default.json中进行配置
+3. 后端项目config/default.json中进行配置数据库名、端口号、用户和密码
    ![](https://gitee.com/bjfuchin/mypic/raw/master/pic/20210815190858.png)
 
 ### 2.4 开启后端项目
@@ -229,7 +239,7 @@ data() {
         this.$message.success('登陆成功')
         //1.将登陆成功之后的token,保存到客户端的sessionStotage中
         //  1.1 项目中除了登录之外的其他的API接口，必须在登录之后才能访问
-        //  1.2 token止盈在当前网站打开期间生效，所以将token保存在sessionStorage中
+        //  1.2 token只应在当前网站打开期间生效，所以将token保存在sessionStorage中
         console.log(res)
         window.sessionStorage.setItem('token', res.data.token)
         //2. 通过编程式导航跳转到后台页面，路由地址是/home

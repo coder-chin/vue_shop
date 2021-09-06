@@ -2,7 +2,7 @@
   <div>
     <!-- 面包屑导航 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>权限管理</el-breadcrumb-item>
       <el-breadcrumb-item>角色列表</el-breadcrumb-item>
     </el-breadcrumb>
@@ -19,7 +19,7 @@
       :data="rolelist"
       border
       stripe>
-      <!-- border显示边框，stripe隔行变色 -->
+      <!-- border显示边框，stripe斑马纹 -->
         <el-table-column
         type="expand"
         label="展开权限">
@@ -196,7 +196,7 @@ export default {
     }
   },
   created() {
-    this.getRolesList()
+    this.getRolesList()   //获取角色列表
   },
   methods: {
     //获取所有角色列表

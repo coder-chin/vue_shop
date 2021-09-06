@@ -1,13 +1,14 @@
 <template>
   <el-container class="home-container">
     <!-- 头部区域 -->
-    <el-header>
+    <el-header height='60px'>
       <div>
         <img src="@/assets/logo.png" alt="" />
         <span>后台管理系统</span>
       </div>
       <el-button type="info" @click="logout">退出</el-button>
     </el-header>
+
     <!-- 页面主体区域 -->
     <el-container>
       <!-- 侧边栏 -->
@@ -26,7 +27,9 @@
         >
          <!-- 一级菜单 -->
          <!-- index是唯一标识，而且类型必须是字符串，如果不加会全部展开 -->
-          <el-submenu :index="item.id + '' " v-for="item in menulist" :key="item.id">
+          <el-submenu :index="item.id + '' " 
+            v-for="item in menulist" 
+            :key="item.id">
             <!-- 一级菜单模板 -->
             <template slot="title">
               <!-- 图标 -->
@@ -40,19 +43,20 @@
             :key="subItem.id"
             @click="saveNavState('/'+subItem.path)">
               <template slot="title">
-              <!-- 图标 -->
-              <i class="el-icon-menu"></i>
-              <!-- 文本 -->
-              <span>{{subItem.authName}}</span>
-            </template>
+                <!-- 图标 -->
+                <i class="el-icon-menu"></i>
+                <!-- 文本 -->
+                <span>{{subItem.authName}}</span>
+              </template>
             </el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
+
       <!-- 右侧主体 -->
       <el-main>
         <router-view></router-view>
-      </el-main>
+      </el-main>      
     </el-container>
   </el-container>
 </template>
@@ -60,10 +64,6 @@
 <script>
 export default {
   name: 'Home',
-  created(){
-    this.getMenuList()  //获取菜单列表
-    this.activePath = window.sessionStorage.getItem('activePath')
-  },
   data() {
     return{
       menulist: [],
@@ -78,6 +78,10 @@ export default {
       activePath: ''
     }
   },
+  created() {
+    this.getMenuList()  //获取菜单列表
+    this.activePath = window.sessionStorage.getItem('activePath')
+  },
   methods: {
     logout() {
       window.sessionStorage.clear()
@@ -85,7 +89,7 @@ export default {
     },
     //获取菜单
     async getMenuList(){
-      const {data: res} = await this.$http.get('menus')
+      const { data: res } = await this.$http.get('menus')
       if(res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.menulist = res.data
     },
@@ -94,7 +98,7 @@ export default {
       this.isCollapse = !this.isCollapse
     },
     saveNavState(path){
-      window.sessionStorage.setItem('activePath',path)
+      window.sessionStorage.setItem('activePath', path)
       this.activePath = path
     }
   },
@@ -106,11 +110,12 @@ export default {
   height: 100%;
 }
 .el-header {
+  height: 80px;
   background-color: #373d41;
   display: flex;
-  justify-content: space-between;
-  padding-left: 0;
-  align-items: center;
+  justify-content: space-between;  //主轴 空隙在中间
+  // padding-left: 10px;
+  align-items: center;            //垂直居中
   font-size: 20px;
   div {
     display: flex;
@@ -120,7 +125,7 @@ export default {
       color: #fff;
     }
     img {
-      width: 60px;
+      width: 54px;
       display: inline-block;
       border-radius: 50%;
       background-color: #eee;

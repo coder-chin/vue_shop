@@ -1,4 +1,5 @@
 module.exports = {
+  roductionsourceMap: false,  //map用来输出错误信息
   chainWebpack: (config) => {
     //发布模式
     config.when(process.env.NODE_ENV === "production", (config) => {
