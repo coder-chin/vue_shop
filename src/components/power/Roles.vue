@@ -1,7 +1,8 @@
 <template>
   <div>
     <!-- 面包屑导航 -->
-    <el-breadcrumb separator-class="el-icon-arrow-right">
+    <el-breadcrumb 
+    separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>权限管理</el-breadcrumb-item>
       <el-breadcrumb-item>角色列表</el-breadcrumb-item>
@@ -192,7 +193,7 @@ export default {
         children: 'children'
       },
       defKeys:[],
-      roleId: '',
+      roleId: ''
     }
   },
   created() {
@@ -232,7 +233,10 @@ export default {
     editRoleInfo() {
       this.$refs.editFormRef.validate(async valid => {
         if(!valid)  return
-        const { data:res } = await this.$http.put('roles/'+ this.editForm.roleID)
+        const { data:res } = await this.$http.put('roles/'+ this.editForm.roleId, {
+          roleName: this.editForm.roleName,
+          roleDesc: this.editForm.roleDesc
+        })
         if(res.meta.status !== 200) return this.$message.error('修改角色失败')
         this.$message.success('修改角色成功')
         this.editDialogVisible = false
@@ -253,7 +257,7 @@ export default {
       this.$message.success('删除用户成功')
       this.getRolesList()
     },
-    async removeRightById(role,rightid){
+    async removeRightById(role, rightid){
        const confirmresult = await this.$confirm('此操作将永久删除该权限, 是否继续?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -286,7 +290,7 @@ export default {
       }
       node.children.forEach(item => this.getLeafKeys(item, arr))
     },
-    setRightDialogClosed(){
+    setRightDialogClosed() {
       this.defKeys = []
     },
     //点击为角色分配权限

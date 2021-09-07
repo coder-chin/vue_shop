@@ -37,7 +37,6 @@
       </el-table>
     </el-card>  
   </div>
-  
 </template>
 
 <script>
@@ -48,20 +47,19 @@ export default {
       rightsList:[],
     }
   },
+  created() {
+    this.getRightsList()
+  },
   methods: {
-    async getRightsList(){
+    async getRightsList() {
       const { data:res } = await this.$http.get('rights/list')
       console.log(res);
       if(res.meta.status !== 200) return this.$message.error('获取权限列表失败!')
       this.rightsList = res.data
     }
-  },
-  created() {
-    this.getRightsList()
-  },
+  }
 }
 </script>
 
 <style lang="less" scoped>
-  
 </style>
